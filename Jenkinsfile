@@ -1,38 +1,34 @@
-pipeline {
-    agent any
-    
-    stages {
-        stage('Build') {
-            steps {
-               sh 'mvn clean install'
-                echo 'Build Stage Successful'
-        }
-    }
-        stage('Test') {
-            steps {
-                sh 'mvn test'
-                echo 'Test Stage Successful'
-                post{
-                    always{
-                        junit 'target/surefire-reports/*.xml'
+pipeline{
+    agent any{
+        stages{
+            stage('Clone repository'){
+                steps{
+                    checkout([$class: 'GitSCM',
+                    branches: [[name: '*/main']],
+                    userRemoteConfigs: [[url)
+                        }
+                    }
+                    stage('Build'){
+                        steps{
+                            build 'PES1UG21CS301-1'
+                            sh 'g++ main.cpp -o output'
+                        }
+                    }
+            stage('Test'){
+                steps{
+                    sh './output'
+                }
             }
-        }
-    }
-}
-        stage('Deploy') {
-            steps {
-                sh 'mvn deploy'
-                echo 'Deployment Successsful'
-            }
-        }
-    }
-    
-    post {
-        failure {
-            
-                    echo 'pipeline failed'
+            stage('Deploy'){
+                steps{
+                    echo 'deploy'
                 }
             }
         }
-    
-
+        post{
+                failure{
+                    error'Pipeline failed'
+                }
+        }
+    }
+                                         
