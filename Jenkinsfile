@@ -4,35 +4,35 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                script {
-                    // Compile the .cpp file using shell script
-                    sh 'g++ -o output_file hello.cpp'
-                }
-            }
+               sh 'mvn clean install'
+                echo 'Build Stage Successful'
         }
+    }
         stage('Test') {
             steps {
-                script {
-                    // Print output of .cpp file using shell script
-                    sh './output_file'
-                }
+                sh 'mvn test'
+                echo 'Test Stage Successful'
+                post{
+                    always{
+                        junit 'target/surefire-reports/*.xml'
             }
         }
+    }
+}
         stage('Deploy') {
             steps {
-                // Add deployment steps here if needed
+                sh 'mvn deploy'
+                echo 'Deployment Successsful'
             }
         }
     }
     
     post {
-        always {
-            // Display 'pipeline failed' in case of any errors within the pipeline
-            script {
-                if (currentBuild.result == 'FAILURE') {
+        failure {
+            
                     echo 'pipeline failed'
                 }
             }
         }
-    }
-}
+    
+
